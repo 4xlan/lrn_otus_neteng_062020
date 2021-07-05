@@ -1,0 +1,283 @@
+Current configuration : 5131 bytes
+!
+! Last configuration change at 15:27:47 EET Wed Sep 30 2020
+!
+version 15.7
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R18
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$nMNe$yhh.72i4AwDkF8rA9OY/e/
+!
+no aaa new-model
+!
+!
+!
+clock timezone EET 2 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+          
+          
+!         
+!         
+!         
+!         
+no ip domain lookup
+ip cef    
+ipv6 unicast-routing
+ipv6 cef  
+!         
+multilink bundle-name authenticated
+!         
+!         
+!         
+key chain weakpassword
+ key 1    
+  key-string 7 123456
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+redundancy
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+crypto isakmp policy 1
+ encr aes 256
+ hash sha256
+ authentication pre-share
+ group 14 
+crypto isakmp key 12309 address 10.255.0.46    
+crypto isakmp key 12309 address 10.255.0.12    
+!         
+!         
+crypto ipsec transform-set vpn-set ah-sha256-hmac esp-aes 
+ mode tunnel
+!         
+!         
+crypto ipsec profile vpn-ipsec
+ set transform-set vpn-set 
+!         
+!         
+!         
+!         
+!         
+!         
+interface Loopback0
+ ip address 10.96.2.254 255.255.255.255
+ ipv6 address FE80::1:23:96 link-local
+ ipv6 address FC00::96:2:1/112
+!         
+interface Tunnel0
+ bandwidth 10000
+ ip address 10.255.0.53 255.255.255.254
+ ip ospf 2 area 0
+ keepalive 10 3
+ tunnel source Ethernet0/2
+ tunnel mode ipsec ipv4
+ tunnel destination 10.255.0.46
+ tunnel protection ipsec profile vpn-ipsec
+!         
+interface Tunnel1
+ bandwidth 10000
+ ip address 10.255.0.55 255.255.255.254
+ ip ospf 2 area 0
+ keepalive 10 3
+ tunnel source Ethernet0/3
+ tunnel mode ipsec ipv4
+ tunnel destination 10.255.0.12
+ tunnel protection ipsec profile vpn-ipsec
+!         
+interface Ethernet0/0
+ ip address 10.255.0.15 255.255.255.254
+ ip nat inside
+ ip virtual-reassembly in
+ duplex auto
+ ipv6 address FE80::1:18:0 link-local
+ ipv6 address 2020::2:0:1:1/120
+!         
+interface Ethernet0/1
+ ip address 10.255.0.19 255.255.255.254
+ ip nat inside
+ ip virtual-reassembly in
+ duplex auto
+ ipv6 address FE80::1:18:1 link-local
+ ipv6 address 2020::2:0:1:101/120
+!         
+interface Ethernet0/2
+ ip address 10.255.0.20 255.255.255.254
+ ip nat outside
+ ip virtual-reassembly in
+ duplex auto
+ ipv6 address FE80::1:18:2 link-local
+ ipv6 address 2020::2:0:1:201/120
+!         
+interface Ethernet0/3
+ ip address 10.255.0.22 255.255.255.254
+ ip nat outside
+ ip virtual-reassembly in
+ duplex auto
+ ipv6 address FE80::1:18:3 link-local
+ ipv6 address 2020::2:0:1:301/120
+!         
+!         
+router eigrp SPBInstance
+ !        
+ address-family ipv4 unicast autonomous-system 2042
+  !       
+  af-interface default
+   authentication mode md5
+   authentication key-chain weakpassword
+   passive-interface
+  exit-af-interface
+  !       
+  af-interface Ethernet0/1
+   summary-address 0.0.0.0 0.0.0.0
+   no passive-interface
+  exit-af-interface
+  !       
+  af-interface Ethernet0/0
+   summary-address 0.0.0.0 0.0.0.0
+   no passive-interface
+  exit-af-interface
+  !       
+  topology base
+   maximum-paths 10
+   redistribute static
+  exit-af-topology
+  network 10.96.2.254 0.0.0.0
+  network 10.255.0.14 0.0.0.1
+  network 10.255.0.18 0.0.0.1
+  eigrp router-id 1.1.254.255
+ exit-address-family
+ !        
+ address-family ipv6 unicast autonomous-system 2042
+  !       
+  af-interface default
+   authentication mode md5
+   authentication key-chain weakpassword
+   passive-interface
+  exit-af-interface
+  !       
+  af-interface Ethernet0/1
+   no passive-interface
+  exit-af-interface
+  !       
+  af-interface Ethernet0/0
+   no passive-interface
+  exit-af-interface
+  !       
+  topology base
+   maximum-paths 10
+   redistribute static
+  exit-af-topology
+ exit-address-family
+!         
+router ospf 2
+ redistribute eigrp 2042 subnets
+ passive-interface default
+ no passive-interface Tunnel0
+ no passive-interface Tunnel1
+ network 10.2.0.0 0.0.255.255 area 0
+!         
+router bgp 2042
+ template peer-policy GENERAL-out
+  prefix-list GENERAL-LIST-out out
+ exit-peer-policy
+ !        
+ template peer-session GENERAL-520
+  remote-as 520
+ exit-peer-session
+ !        
+ bgp log-neighbor-changes
+ network 100.100.100.0 mask 255.255.255.0
+ neighbor 10.255.0.21 inherit peer-session GENERAL-520
+ neighbor 10.255.0.21 inherit peer-policy GENERAL-out
+ neighbor 10.255.0.23 inherit peer-session GENERAL-520
+ neighbor 10.255.0.23 inherit peer-policy GENERAL-out
+ maximum-paths 2
+!         
+ip forward-protocol nd
+!         
+!         
+no ip http server
+no ip http secure-server
+ip nat inside source route-map NAT_TO_R24 interface Ethernet0/2 overload
+ip nat inside source route-map NAT_TO_R26 interface Ethernet0/3 overload
+ip route 100.100.100.0 255.255.255.0 Null0
+!         
+ip access-list extended ADDR_TO_NAT
+ permit ip 10.2.0.0 0.0.255.255 any
+ deny   ip any any
+!         
+!         
+ip prefix-list GENERAL-LIST-out seq 5 permit 10.255.0.0/24
+ip prefix-list GENERAL-LIST-out seq 7 permit 100.100.100.0/24
+ip prefix-list GENERAL-LIST-out seq 10 deny 0.0.0.0/0 le 32
+ip sla auto discovery
+ipv6 ioam timestamp
+!         
+route-map NAT_TO_R24 permit 10
+ match ip address ADDR_TO_NAT
+ match interface Ethernet0/2
+!         
+route-map NAT_TO_R26 permit 10
+ match ip address ADDR_TO_NAT
+ match interface Ethernet0/3
+!         
+!         
+!         
+control-plane
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+banner motd ^C Unauthorized access is prohibited.^C
+!         
+line con 0
+ password 7 01100F175804
+ logging synchronous
+ login    
+line aux 0
+ password 7 02050D480809
+line vty 0 4
+ password 7 104D000A0618
+ login    
+ transport input all
+!         
+!         
+end 

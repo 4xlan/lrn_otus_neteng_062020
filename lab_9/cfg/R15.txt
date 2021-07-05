@@ -1,0 +1,281 @@
+Current configuration : 4524 bytes
+!
+version 15.7
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R15
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$SHB9$mGMix8ovyHUZMyuJ/x6KT1
+!
+no aaa new-model
+!
+!
+!
+clock timezone EET 2 0
+mmi polling-interval 60
+no mmi auto-configure
+          
+R15(config)#do sh run
+Building configuration...
+
+Current configuration : 4524 bytes
+!
+version 15.7
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R15
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$SHB9$mGMix8ovyHUZMyuJ/x6KT1
+!
+no aaa new-model
+!
+!
+!
+clock timezone EET 2 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+          
+          
+!         
+!         
+!         
+!         
+no ip domain lookup
+ip cef    
+ipv6 unicast-routing
+ipv6 cef  
+!         
+multilink bundle-name authenticated
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+redundancy
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+crypto isakmp policy 1
+ encr aes 256
+ hash sha256
+ authentication pre-share
+ group 14 
+crypto isakmp key 12309 address 10.255.0.22    
+!         
+!         
+crypto ipsec transform-set vpn-set ah-sha256-hmac esp-aes 
+ mode tunnel
+!         
+!         
+crypto ipsec profile vpn-ipsec
+ set transform-set vpn-set 
+!         
+!         
+!         
+!         
+!         
+!         
+interface Loopback0
+ ip address 10.96.1.253 255.255.255.255
+ ipv6 address FE80::1:15:96 link-local
+ ipv6 address FC00::96:1:2/112
+!         
+interface Tunnel0
+ bandwidth 10000
+ ip address 10.255.0.54 255.255.255.254
+ keepalive 10 3
+ tunnel source Ethernet0/2
+ tunnel mode ipsec ipv4
+ tunnel destination 10.255.0.22
+ tunnel protection ipsec profile vpn-ipsec
+!         
+interface Ethernet0/0
+ ip address 10.255.0.7 255.255.255.254
+ ip nat inside
+ ip virtual-reassembly in
+ ip ospf 1 area 10
+ duplex auto
+ ipv6 address FE80::1:15:0 link-local
+ ipv6 address 2020::1:0:2:1/120
+ ipv6 ospf 1 area 10
+!         
+interface Ethernet0/1
+ ip address 10.255.0.3 255.255.255.254
+ ip nat inside
+ ip virtual-reassembly in
+ ip ospf 1 area 10
+ duplex auto
+ ipv6 address FE80::1:15:1 link-local
+ ipv6 address 2020::1:0:2:101/120
+ ipv6 ospf 1 area 10
+!         
+interface Ethernet0/2
+ ip address 10.255.0.12 255.255.255.254
+ ip nat outside
+ ip virtual-reassembly in
+ duplex auto
+ ipv6 address FE80::1:15:2 link-local
+ ipv6 address 2020::1:0:2:201/120
+!         
+interface Ethernet0/3
+ ip address 10.255.0.10 255.255.255.254
+ ip nat inside
+ ip virtual-reassembly in
+ ip ospf 1 area 102
+ duplex auto
+ ipv6 address FE80::1:15:3 link-local
+ ipv6 address 2020::1:0:2:301/120
+ ipv6 ospf 1 area 102
+!         
+interface Ethernet1/0
+ ip address 10.255.0.51 255.255.255.254
+ ip nat inside
+ ip virtual-reassembly in
+ ip ospf 1 area 0
+ duplex auto
+ ipv6 address FE80::1:15:4 link-local
+ ipv6 address 2020::1:0:2:401/120
+ ipv6 ospf 1 area 0
+!         
+interface Ethernet1/1
+ no ip address
+ shutdown 
+ duplex auto
+!         
+interface Ethernet1/2
+ no ip address
+ shutdown 
+ duplex auto
+!         
+interface Ethernet1/3
+ no ip address
+ shutdown 
+ duplex auto
+!         
+router ospf 1
+ router-id 1.1.255.254
+ area 10 stub
+ area 102 stub
+ area 102 filter-list prefix Area102Filter in
+ passive-interface default
+ no passive-interface Ethernet0/0
+ no passive-interface Ethernet0/1
+ no passive-interface Ethernet0/3
+ no passive-interface Ethernet1/0
+ network 10.96.1.0 0.0.0.255 area 0
+!         
+router bgp 1001
+ bgp log-neighbor-changes
+ network 10.1.0.0 mask 255.255.0.0
+ neighbor 10.96.1.254 remote-as 1001
+ neighbor 10.96.1.254 update-source Loopback0
+ neighbor 10.255.0.13 remote-as 301
+ neighbor 10.255.0.13 distribute-list GENERAL-restrict out
+ neighbor 10.255.0.55 remote-as 2042
+ neighbor 10.255.0.55 distribute-list AS2042-restrict out
+!         
+ip forward-protocol nd
+!         
+!         
+no ip http server
+no ip http secure-server
+ip nat inside source route-map NAT_TO_R21 interface Ethernet0/2 overload
+ip route 10.1.0.0 255.255.0.0 Null0
+!         
+ip access-list extended ADDR_TO_NAT
+ permit ip 10.1.0.0 0.0.255.255 any
+ deny   ip any any
+ip access-list extended AS2042-restrict
+ permit ip 10.1.0.0 0.0.255.255 any
+ deny   ip any any
+ip access-list extended GENERAL-restrict
+ deny   ip 10.1.0.0 0.0.255.255 any
+ deny   ip 10.2.0.0 0.0.255.255 any
+ permit ip any any
+!         
+!         
+ip prefix-list Area102Filter seq 5 deny 10.255.0.8/31
+ip prefix-list Area102Filter seq 10 permit 0.0.0.0/0 le 32
+ipv6 router ospf 1
+ router-id 1.1.255.254
+ area 10 stub
+ area 102 stub
+ area 102 filter-list prefix Area102-v6-Filter in
+ passive-interface default
+ no passive-interface Ethernet0/0
+ no passive-interface Ethernet0/1
+ no passive-interface Ethernet0/3
+ no passive-interface Ethernet1/0
+!         
+ipv6 ioam timestamp
+!         
+!         
+ipv6 prefix-list Area102-v6-Filter seq 5 deny 2020::1:0:5:0/120
+ipv6 prefix-list Area102-v6-Filter seq 10 permit ::/0 le 128
+route-map NAT_TO_R21 permit 10
+ match ip address ADDR_TO_NAT
+ match interface Ethernet0/2
+!         
+!         
+!         
+control-plane
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+banner motd ^C Unauthorized access is prohibited.^C
+!         
+line con 0
+ password 7 14141B180F0B
+ logging synchronous
+ login    
+line aux 0
+ password 7 060506324F41
+line vty 0 4
+ password 7 070C285F4D06
+ login    
+ transport input all
+!         
+!         
+end

@@ -1,0 +1,125 @@
+Current configuration : 1852 bytes
+!
+! Last configuration change at 19:41:34 EET Wed Aug 12 2020
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+service compress-config
+!
+hostname SW2
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$iwjc$yVhqtyGsYOTpWNahi2/iC.
+!
+no aaa new-model
+clock timezone EET 2 0
+!
+!
+!         
+!         
+!         
+!         
+!         
+!         
+no ip domain-lookup
+ip cef    
+ipv6 unicast-routing
+ipv6 cef  
+!         
+!         
+spanning-tree mode pvst
+spanning-tree extend system-id
+!         
+vlan internal allocation policy ascending
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+interface Loopback0
+ ip address 10.96.1.245 255.255.255.255
+ ipv6 address FE80::2:2:96 link-local
+ ipv6 address FC00::96:1:A/112
+!         
+interface Ethernet0/0
+ switchport trunk allowed vlan 11,90,96
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 90
+ switchport mode trunk
+ ip dhcp snooping trust
+!         
+interface Ethernet0/1
+ switchport trunk allowed vlan 11,90,96
+ switchport trunk encapsulation dot1q
+ switchport trunk native vlan 90
+ switchport mode trunk
+ ip dhcp snooping trust
+!         
+interface Ethernet0/2
+ switchport access vlan 11
+ switchport mode access
+!         
+interface Ethernet0/3
+ switchport access vlan 400
+ switchport mode access
+ shutdown 
+!         
+interface Ethernet1/0
+ switchport access vlan 400
+ switchport mode access
+ shutdown 
+!         
+interface Ethernet1/1
+ switchport access vlan 400
+ switchport mode access
+ shutdown 
+!         
+interface Ethernet1/2
+ switchport access vlan 400
+ switchport mode access
+ shutdown 
+!         
+interface Ethernet1/3
+ switchport access vlan 400
+ switchport mode access
+ shutdown 
+!         
+ip forward-protocol nd
+!         
+no ip http server
+no ip http secure-server
+!         
+!         
+!         
+!         
+!         
+!         
+control-plane
+!         
+banner motd ^C Unauthorized access is prohibited.^C
+!         
+line con 0
+ password 7 070C285F4D06
+ logging synchronous
+ login    
+line aux 0
+ password 7 14141B180F0B
+line vty 0 4
+ password 7 121A0C041104
+ login    
+!         
+!         
+end       

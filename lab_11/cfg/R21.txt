@@ -1,0 +1,158 @@
+Current configuration : 2364 bytes
+!
+! Last configuration change at 15:27:56 EET Wed Sep 30 2020
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R21
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$hDx0$TwDGW2EBErDDilwAAScd70
+!
+no aaa new-model
+clock timezone EET 2 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!         
+!         
+!         
+!         
+          
+          
+!         
+!         
+!         
+!         
+no ip domain lookup
+ip cef    
+ipv6 unicast-routing
+ipv6 cef  
+!         
+multilink bundle-name authenticated
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+redundancy
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+interface Loopback0
+ ip address 10.96.4.254 255.255.255.255
+ ipv6 address FE80::1:21:96 link-local
+ ipv6 address FC00::96:4:1/112
+!         
+interface Ethernet0/0
+ ip address 10.255.0.13 255.255.255.254
+ ipv6 address FE80::1:21:0 link-local
+ ipv6 address 2020::4:0:1:1/120
+!         
+interface Ethernet0/1
+ ip address 10.255.0.24 255.255.255.254
+ ipv6 address FE80::1:21:1 link-local
+ ipv6 address 2020::4:0:1:101/120
+!         
+interface Ethernet0/2
+ ip address 10.255.0.26 255.255.255.254
+ ipv6 address FE80::1:21:2 link-local
+ ipv6 address 2020::4:0:1:201/120
+!         
+interface Ethernet0/3
+ no ip address
+ shutdown 
+!         
+interface Ethernet1/0
+ no ip address
+ shutdown 
+!         
+interface Ethernet1/1
+ no ip address
+ shutdown 
+!         
+interface Ethernet1/2
+ no ip address
+ shutdown 
+!         
+interface Ethernet1/3
+ no ip address
+ shutdown 
+!         
+router bgp 301
+ template peer-policy GENERAL
+  distribute-list GENERAL-restrict out
+ exit-peer-policy
+ !        
+ template peer-policy MSK-SPB
+  filter-list 1 out
+  default-originate
+ exit-peer-policy
+ !        
+ bgp log-neighbor-changes
+ redistribute connected
+ neighbor 10.255.0.12 remote-as 1001
+ neighbor 10.255.0.12 inherit peer-policy MSK-SPB
+ neighbor 10.255.0.25 remote-as 101
+ neighbor 10.255.0.25 inherit peer-policy GENERAL
+ neighbor 10.255.0.27 remote-as 520
+ neighbor 10.255.0.27 inherit peer-policy GENERAL
+!         
+ip forward-protocol nd
+!         
+ip as-path access-list 1 permit _2042$
+ip as-path access-list 1 deny .*
+!         
+no ip http server
+no ip http secure-server
+!         
+ip access-list extended GENERAL-restrict
+ deny   ip 10.96.0.0 0.0.255.255 any
+ permit ip any any
+!         
+!         
+!         
+!         
+control-plane
+!         
+!         
+!         
+!         
+!         
+!         
+banner motd ^C Unauthorized access is prohibited.^C
+!         
+line con 0
+ password 7 02050D480809
+ logging synchronous
+ login    
+line aux 0
+ password 7 14141B180F0B
+line vty 0 4
+ password 7 0822455D0A16
+ login    
+ transport input all
+!         
+!         
+end 

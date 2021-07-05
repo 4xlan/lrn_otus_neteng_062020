@@ -1,0 +1,295 @@
+Current configuration : 5339 bytes
+!
+! Last configuration change at 18:09:42 EET Sun Oct 25 2020
+! NVRAM config last updated at 18:19:26 EET Sun Oct 25 2020
+!
+version 15.7
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R14
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$rDwk$.vy4L/vNYa8nAaXkifClG0
+!
+no aaa new-model
+!
+!
+!
+clock timezone EET 2 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+          
+          
+!         
+!         
+!         
+!         
+no ip domain lookup
+ip cef    
+ipv6 unicast-routing
+ipv6 cef  
+!         
+multilink bundle-name authenticated
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+redundancy
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+crypto isakmp policy 1
+ encr aes 256
+ hash sha256
+ authentication pre-share
+ group 14 
+crypto isakmp key 12309 address 10.255.0.20    
+!         
+!         
+crypto ipsec transform-set vpn-set ah-sha256-hmac esp-aes 
+ mode tunnel
+!         
+!         
+crypto ipsec profile vpn-ipsec
+ set transform-set vpn-set 
+!         
+!         
+!         
+!         
+!         
+!         
+interface Loopback0
+ ip address 10.96.1.254 255.255.255.255
+ ipv6 address FE80::1:14:96 link-local
+ ipv6 address FC00::96:1:1/112
+!         
+interface Tunnel0
+ bandwidth 10000
+ ip address 10.255.0.52 255.255.255.254
+ ip ospf 2 area 0
+ shutdown 
+ keepalive 10 3
+ tunnel source Ethernet0/2
+ tunnel mode ipsec ipv4
+ tunnel destination 10.255.0.20
+ tunnel protection ipsec profile vpn-ipsec
+!         
+interface Tunnel10
+ ip address 10.255.0.56 255.255.255.254
+ ip mtu 1400
+ ip tcp adjust-mss 1360
+ tunnel source 10.255.0.46
+ tunnel destination 10.255.0.20
+!         
+interface Tunnel100
+ ip address 10.4.0.1 255.255.255.248
+ no ip redirects
+ ip mtu 1400
+ no ip next-hop-self eigrp 100
+ no ip split-horizon eigrp 100
+ ip nhrp authentication NID100
+ ip nhrp network-id 100
+ ip nhrp redirect
+ ip tcp adjust-mss 1360
+ tunnel source Ethernet0/2
+ tunnel mode gre multipoint
+!         
+interface Ethernet0/0
+ ip address 10.255.0.1 255.255.255.254
+ ip nat inside
+ ip virtual-reassembly in
+ ip ospf 1 area 10
+ duplex auto
+ ipv6 address FE80::1:14:0 link-local
+ ipv6 address 2020::1:0:1:1/120
+ ipv6 ospf 1 area 10
+!         
+interface Ethernet0/1
+ ip address 10.255.0.5 255.255.255.254
+ ip nat inside
+ ip virtual-reassembly in
+ ip ospf 1 area 10
+ duplex auto
+ ipv6 address FE80::1:14:1 link-local
+ ipv6 address 2020::1:0:1:101/120
+ ipv6 ospf 1 area 10
+!         
+interface Ethernet0/2
+ ip address 10.255.0.46 255.255.255.254
+ ip nat outside
+ ip virtual-reassembly in
+ duplex auto
+ ipv6 address FE80::1:14:2 link-local
+ ipv6 address 2020::1:0:1:201/120
+!         
+interface Ethernet0/3
+ ip address 10.255.0.8 255.255.255.254
+ ip nat inside
+ ip virtual-reassembly in
+ ip ospf 1 area 101
+ duplex auto
+ ipv6 address FE80::1:14:3 link-local
+ ipv6 address 2020::1:0:1:301/120
+ ipv6 ospf 1 area 101
+!         
+interface Ethernet1/0
+ ip address 10.255.0.50 255.255.255.254
+ ip nat inside
+ ip virtual-reassembly in
+ ip ospf 1 area 0
+ duplex auto
+ ipv6 address FE80::1:14:4 link-local
+ ipv6 address 2020::1:0:1:401/120
+ ipv6 ospf 1 area 0
+!         
+interface Ethernet1/1
+ no ip address
+ shutdown 
+ duplex auto
+!         
+interface Ethernet1/2
+ no ip address
+ shutdown 
+ duplex auto
+!         
+interface Ethernet1/3
+ no ip address
+ shutdown 
+ duplex auto
+!         
+!         
+router eigrp 100
+ network 10.1.0.0 0.0.0.255
+ network 10.4.0.0 0.0.0.7
+ passive-interface default
+ no passive-interface Tunnel100
+!         
+router ospf 2
+ redistribute ospf 1 subnets
+ passive-interface default
+ no passive-interface Tunnel0
+ network 10.1.0.0 0.0.255.255 area 0
+!         
+router ospf 1
+ router-id 1.1.255.255
+ area 10 stub
+ area 101 stub no-summary
+ passive-interface default
+ no passive-interface Ethernet0/0
+ no passive-interface Ethernet0/1
+ no passive-interface Ethernet0/3
+ no passive-interface Ethernet1/0
+ network 10.96.1.0 0.0.0.255 area 0
+!         
+router bgp 1001
+ template peer-policy GENERAL-out
+  filter-list 1 out
+  prefix-list GENERAL-out out
+ exit-peer-policy
+ !        
+ bgp log-neighbor-changes
+ network 10.255.0.12 mask 255.255.255.255
+ network 10.255.0.46 mask 255.255.255.255
+ network 200.200.200.0
+ neighbor 10.96.1.253 remote-as 1001
+ neighbor 10.96.1.253 update-source Loopback0
+ neighbor 10.255.0.47 remote-as 101
+ neighbor 10.255.0.47 route-map AS101-in in
+ neighbor 10.255.0.47 inherit peer-policy GENERAL-out
+!         
+ip forward-protocol nd
+!         
+ip as-path access-list 1 permit ^$
+ip as-path access-list 1 deny .*
+!         
+no ip http server
+no ip http secure-server
+ip nat inside source static tcp 10.255.0.9 23 10.255.0.46 27960 extendable
+ip nat inside source static 10.255.0.11 200.200.200.20
+ip route 200.200.200.0 255.255.255.0 Null0
+!         
+ip access-list extended ADDR_TO_NAT
+ permit ip 10.1.0.0 0.0.255.255 any
+ deny   ip any any
+!         
+!         
+ip prefix-list GENERAL-out seq 5 permit 200.200.200.0/24
+ip prefix-list GENERAL-out seq 10 deny 0.0.0.0/0 le 32
+!         
+ip prefix-list R22_PL seq 5 permit 10.255.0.47/32
+ip sla auto discovery
+ipv6 router ospf 1
+ router-id 1.1.255.255
+ area 10 stub
+ area 101 stub no-summary
+ passive-interface default
+ no passive-interface Ethernet0/0
+ no passive-interface Ethernet0/1
+ no passive-interface Ethernet0/3
+ no passive-interface Ethernet1/0
+!         
+ipv6 ioam timestamp
+!         
+route-map AS101-in permit 10
+ set local-preference 90
+!         
+!         
+!         
+control-plane
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+banner motd ^C Unauthorized access is prohibited.^C
+!         
+line con 0
+ password 7 0822455D0A16
+ logging synchronous
+ login    
+line aux 0
+ password 7 05080F1C2243
+line vty 0 4
+ password 7 01100F175804
+ login    
+ transport input all
+!         
+ntp update-calendar
+ntp server 10.255.0.0 prefer
+ntp server 10.255.0.6
+!         
+end

@@ -1,0 +1,166 @@
+Current configuration : 2607 bytes
+!
+! Last configuration change at 15:53:17 EET Wed Sep 30 2020
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R25
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$tEc1$PL9x/wGzcxCsIOZosjrw/0
+!
+no aaa new-model
+clock timezone EET 2 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!         
+!         
+!         
+!         
+          
+          
+!         
+!         
+!         
+!         
+no ip domain lookup
+ip cef    
+ipv6 unicast-routing
+ipv6 cef  
+!         
+multilink bundle-name authenticated
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+redundancy
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+interface Loopback0
+ ip address 10.96.7.252 255.255.255.255
+ ipv6 address FE80::1:25:96 link-local
+ ipv6 address FC00::96:7:3/112
+!         
+interface Ethernet0/0
+ ip address 10.255.0.33 255.255.255.254
+ ip ospf 1 area 0
+ ipv6 address FE80::1:25:0 link-local
+ ipv6 address 2020::7:0:3:1/120
+!         
+interface Ethernet0/1
+ ip address 10.255.0.38 255.255.255.254
+ ipv6 address FE80::1:25:1 link-local
+ ipv6 address 2020::7:0:3:101/120
+!         
+interface Ethernet0/2
+ ip address 10.255.0.36 255.255.255.254
+ ip ospf 1 area 0
+ ipv6 address FE80::1:25:2 link-local
+ ipv6 address 2020::7:0:3:201/120
+!         
+interface Ethernet0/3
+ ip address 10.255.0.40 255.255.255.254
+ ipv6 address FE80::1:25:3 link-local
+ ipv6 address 2020::7:0:3:301/120
+!         
+interface Ethernet1/0
+ no ip address
+ shutdown 
+!         
+interface Ethernet1/1
+ no ip address
+ shutdown 
+!         
+interface Ethernet1/2
+ no ip address
+ shutdown 
+!         
+interface Ethernet1/3
+ no ip address
+ shutdown 
+!         
+router ospf 1
+ network 10.96.7.0 0.0.0.255 area 0
+!         
+router bgp 520
+ template peer-policy TP520iBGP
+  route-reflector-client
+ exit-peer-policy
+ !        
+ template peer-policy GENERAL
+  distribute-list GENERAL-restrict out
+ exit-peer-policy
+ !        
+ template peer-session TS520iBGP
+  remote-as 520
+  update-source Loopback0
+ exit-peer-session
+ !        
+ bgp log-neighbor-changes
+ redistribute connected
+ neighbor 10.96.7.251 inherit peer-session TS520iBGP
+ neighbor 10.96.7.251 inherit peer-policy TP520iBGP
+ neighbor 10.96.7.253 inherit peer-session TS520iBGP
+ neighbor 10.96.7.253 inherit peer-policy TP520iBGP
+ neighbor 10.96.7.254 inherit peer-session TS520iBGP
+ neighbor 10.96.7.254 inherit peer-policy TP520iBGP
+!         
+ip forward-protocol nd
+!         
+!         
+no ip http server
+no ip http secure-server
+!         
+ip access-list extended GENERAL-restrict
+ deny   ip 10.96.0.0 0.0.255.255 any
+ permit ip any any
+!         
+!         
+!         
+!         
+control-plane
+!         
+!         
+!         
+!         
+!         
+!         
+banner motd ^C Unauthorized access is prohibited.^C
+!         
+line con 0
+ password 7 05080F1C2243
+ logging synchronous
+ login    
+line aux 0
+ password 7 1511021F0725
+line vty 0 4
+ password 7 1511021F0725
+ login    
+ transport input all
+!         
+!         
+end 

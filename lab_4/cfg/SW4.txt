@@ -1,0 +1,137 @@
+Current configuration : 2350 bytes
+!
+! Last configuration change at 19:38:23 EET Wed Aug 12 2020
+!
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+service compress-config
+!
+hostname SW4
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$AN5h$7TpZcOdV.4rlHXHwcF3p/.
+!
+no aaa new-model
+clock timezone EET 2 0
+!
+!
+!         
+!         
+!         
+!         
+!         
+!         
+no ip domain-lookup
+ip cef    
+ipv6 unicast-routing
+ipv6 cef  
+!         
+!         
+!         
+spanning-tree mode pvst
+spanning-tree extend system-id
+spanning-tree vlan 10 priority 24576
+!         
+vlan internal allocation policy ascending
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+interface Loopback0
+ ip address 10.96.1.248 255.255.255.255
+ ipv6 address FE80::2:4:96 link-local
+ ipv6 address FC00::96:1:7/112
+!         
+interface Port-channel1
+ switchport access vlan 400
+ switchport trunk allowed vlan 10,11,90,96
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!         
+interface Ethernet0/0
+ switchport trunk allowed vlan 10,90,96
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!         
+interface Ethernet0/1
+ switchport trunk allowed vlan 11,90,96
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!         
+interface Ethernet0/2
+ switchport access vlan 400
+ switchport trunk allowed vlan 10,11,90,96
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ channel-group 1 mode active
+!         
+interface Ethernet0/3
+ switchport access vlan 400
+ switchport trunk allowed vlan 10,11,90,96
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+ channel-group 1 mode active
+!         
+interface Ethernet1/0
+ switchport trunk allowed vlan 10,11,90,96
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!         
+interface Ethernet1/1
+ switchport access vlan 400
+ switchport trunk allowed vlan 10,11,90,96
+ switchport trunk encapsulation dot1q
+ switchport mode trunk
+!         
+interface Ethernet1/2
+ switchport access vlan 400
+ switchport mode access
+ shutdown 
+!         
+interface Ethernet1/3
+ switchport access vlan 400
+ switchport mode access
+ shutdown 
+!         
+ip forward-protocol nd
+!         
+no ip http server
+no ip http secure-server
+!         
+ip route 0.0.0.0 0.0.0.0 10.1.10.1 50 name R12
+ip route 0.0.0.0 0.0.0.0 10.1.10.2 70 name R13
+!         
+!         
+!         
+!         
+!         
+control-plane
+!         
+banner motd ^C Unauthorized access is prohibited.^C
+!         
+line con 0
+ password 7 060506324F41
+ logging synchronous
+ login    
+line aux 0
+ password 7 104D000A0618
+line vty 0 4
+ password 7 104D000A0618
+ login    
+!         
+!         
+end

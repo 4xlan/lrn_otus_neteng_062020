@@ -1,0 +1,234 @@
+!
+! Last configuration change at 15:16:56 EET Sat Nov 28 2020
+! NVRAM config last updated at 15:21:35 EET Sat Nov 28 2020
+!
+version 15.7
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname mike_bgw_2
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$mnab$8twhFBUt4rjt.yspfRNiE1
+!
+no aaa new-model
+!
+!
+!
+clock timezone EET 2 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+!
+
+
+!
+!
+!
+!
+ip cef
+no ipv6 cef
+!
+multilink bundle-name authenticated
+!
+!
+!
+!
+!
+!
+!
+!
+crypto pki trustpoint ULTOR_TP
+ enrollment url http://10.255.1.11:80
+ serial-number
+ revocation-check crl
+ rsakeypair mike_bgw_2
+!
+!
+crypto pki certificate chain ULTOR_TP
+ certificate 05 nvram:ULTORrootCA#5.cer
+ certificate ca 01 nvram:ULTORrootCA#1CA.cer
+!
+redundancy
+!
+!
+! 
+!
+!
+!
+!
+crypto isakmp policy 1
+ encr aes 256
+ hash sha256
+ group 14
+crypto isakmp keepalive 60 5
+!
+!
+crypto ipsec transform-set vpn-set ah-sha256-hmac esp-aes 
+ mode transport
+!
+!
+crypto ipsec profile vpn-ipsec
+ set transform-set vpn-set 
+!
+!
+!
+!
+!
+!
+interface Loopback0
+ no shutdown
+ ip address 172.16.1.2 255.255.255.255
+!
+interface Tunnel2
+ no shutdown
+ bandwidth 100000
+ ip address 192.168.20.1 255.255.255.0
+ no ip redirects
+ ip mtu 1400
+ no ip next-hop-self eigrp 2
+ no ip split-horizon eigrp 2
+ ip nhrp authentication T2NHRPKY
+ ip nhrp network-id 2
+ ip nhrp redirect
+ ip tcp adjust-mss 1360
+ tunnel source Ethernet0/3
+ tunnel mode gre multipoint
+ tunnel key 2
+ tunnel protection ipsec profile vpn-ipsec shared
+!
+interface Ethernet0/0
+ no shutdown
+ ip address 10.255.1.1 255.255.255.254
+ ip nat inside
+ ip virtual-reassembly in
+ ip ospf 1 area 0
+ duplex auto
+!
+interface Ethernet0/1
+ no shutdown
+ ip address 10.255.1.6 255.255.255.254
+ ip nat inside
+ ip virtual-reassembly in
+ ip ospf 1 area 1
+ duplex auto
+!
+interface Ethernet0/2
+ no shutdown
+ ip address 10.255.1.8 255.255.255.254
+ ip nat inside
+ ip virtual-reassembly in
+ ip ospf 1 area 1
+ duplex auto
+!
+interface Ethernet0/3
+ no shutdown
+ ip address 1.19.194.112 255.255.0.0
+ ip nat outside
+ ip virtual-reassembly in
+ duplex auto
+!
+!
+router eigrp 2
+ network 10.255.1.0 0.0.0.255
+ network 192.168.20.0
+ passive-interface default
+ no passive-interface Tunnel2
+!
+router ospf 1
+ area 1 stub
+ redistribute eigrp 2 subnets
+ passive-interface default
+ no passive-interface Ethernet0/0
+ no passive-interface Ethernet0/1
+ no passive-interface Ethernet0/2
+ default-information originate
+!
+router bgp 28910
+ template peer-policy GENERAL
+  filter-list 1 out
+  prefix-list IN_FILTER in
+ exit-peer-policy
+ !
+ template peer-policy PROVIDER
+  route-map SHANNET_PRIOR in
+  inherit peer-policy GENERAL 1
+ exit-peer-policy
+ !
+ bgp log-neighbor-changes
+ neighbor 1.19.0.1 remote-as 2541
+ neighbor 1.19.0.1 inherit peer-policy PROVIDER
+ neighbor 10.255.1.0 remote-as 28910
+!
+ip forward-protocol nd
+!
+ip as-path access-list 1 permit $^
+ip as-path access-list 1 deny .*
+!
+no ip http server
+no ip http secure-server
+ip nat source route-map NAT_MAP interface Ethernet0/3 overload
+!
+ip access-list extended SUBN_TO_NAT
+ permit ip 10.255.1.0 0.0.0.255 any
+ deny   ip any any
+!
+!
+ip prefix-list IN_FILTER seq 5 permit 0.0.0.0/0
+ip prefix-list IN_FILTER seq 10 deny 0.0.0.0/0 le 32
+ipv6 ioam timestamp
+!
+route-map SHANNET_PRIOR permit 10
+ set metric 250
+ set local-preference 200
+!
+route-map NAT_MAP permit 10
+ match ip address SUBN_TO_NAT
+ match interface Ethernet0/3
+!
+!
+!
+control-plane
+!
+!
+!
+!
+!
+!
+!
+banner motd CUnauthorized access is prohibited.
+!
+line con 0
+ password 7 02050D480809
+ logging synchronous
+ login
+line aux 0
+line vty 0 4
+ password 7 045802150C2E
+ login
+ transport input none
+!
+ntp master 2
+ntp update-calendar
+ntp server 3.141.0.1
+!
+end

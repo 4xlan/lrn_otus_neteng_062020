@@ -1,0 +1,150 @@
+Current configuration : 2182 bytes
+!
+! Last configuration change at 16:57:47 EET Wed Aug 12 2020
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R16
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$G8on$/ppyllX7UQqiykUb0dg4k.
+!
+no aaa new-model
+clock timezone EET 2 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!         
+!         
+!         
+!         
+          
+          
+!         
+ip dhcp excluded-address 10.2.21.1 10.2.21.10
+!         
+ip dhcp pool DHCP-V21-Pool
+ network 10.2.21.0 255.255.255.0
+ default-router 10.2.21.1 
+ lease 2 12 30
+!         
+!         
+!         
+no ip domain lookup
+ip cef    
+ipv6 unicast-routing
+ipv6 cef  
+!         
+multilink bundle-name authenticated
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+redundancy
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+interface Loopback0
+ ip address 10.96.2.252 255.255.255.255
+ ipv6 address FE80::1:16:96 link-local
+ ipv6 address FC00::96:2:3/112
+!         
+interface Ethernet0/0
+ no ip address
+!         
+interface Ethernet0/0.21
+ encapsulation dot1Q 21
+ ip address 10.2.21.1 255.255.255.0
+ ipv6 address FE80::1:16:21 link-local
+ ipv6 address 2020::2:0:21:1/112
+!         
+interface Ethernet0/1
+ ip address 10.255.0.14 255.255.255.254
+ ipv6 address FE80::1:16:1 link-local
+ ipv6 address 2020::2:0:3:101/120
+!         
+interface Ethernet0/2
+ no ip address
+!         
+interface Ethernet0/2.20
+ encapsulation dot1Q 20
+ ip address 10.2.20.2 255.255.255.0
+ ipv6 address FE80::1:16:3 link-local
+ ipv6 address 2020::2:0:20:2/112
+!         
+interface Ethernet0/3
+ ip address 10.255.0.16 255.255.255.254
+ ipv6 address FE80::1:16:3 link-local
+ ipv6 address 2020::2:0:3:301/120
+!         
+interface Ethernet1/0
+ ip address 10.255.0.48 255.255.255.254
+ ipv6 address FE80::1:16:4 link-local
+ ipv6 address 2020::2:0:3:401/120
+!         
+interface Ethernet1/1
+ no ip address
+ shutdown 
+!         
+interface Ethernet1/2
+ no ip address
+ shutdown 
+!         
+interface Ethernet1/3
+ no ip address
+ shutdown 
+!         
+ip forward-protocol nd
+!         
+!         
+no ip http server
+no ip http secure-server
+ip route 0.0.0.0 0.0.0.0 Ethernet0/1 10.255.0.15
+!         
+!         
+!         
+!         
+control-plane
+!         
+!         
+!         
+!         
+!         
+!         
+banner motd ^C Unauthorized access is prohibited.^C
+!         
+line con 0
+ password 7 060506324F41
+ logging synchronous
+ login    
+line aux 0
+ password 7 110A1016141D
+line vty 0 4
+ password 7 00071A150754
+ login    
+ transport input all
+!         
+!         
+end

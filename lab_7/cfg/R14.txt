@@ -1,0 +1,152 @@
+Current configuration : 2149 bytes
+!
+! Last configuration change at 09:21:01 EET Thu Aug 20 2020
+version 15.2
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R14
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$rDwk$.vy4L/vNYa8nAaXkifClG0
+!
+no aaa new-model
+clock timezone EET 2 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!         
+!         
+!         
+!         
+          
+          
+!         
+!         
+!         
+!         
+no ip domain lookup
+ip cef    
+ipv6 unicast-routing
+ipv6 cef  
+!         
+multilink bundle-name authenticated
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+redundancy
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+interface Loopback0
+ ip address 10.96.1.254 255.255.255.255
+ ipv6 address FE80::1:14:96 link-local
+ ipv6 address FC00::96:1:1/112
+!         
+interface Ethernet0/0
+ ip address 10.255.0.1 255.255.255.254
+ ip ospf 1 area 10
+ ipv6 address FE80::1:14:0 link-local
+ ipv6 address 2020::1:0:1:1/120
+ ipv6 ospf 1 area 10
+!         
+interface Ethernet0/1
+ ip address 10.255.0.5 255.255.255.254
+ ip ospf 1 area 10
+ ipv6 address FE80::1:14:1 link-local
+ ipv6 address 2020::1:0:1:101/120
+ ipv6 ospf 1 area 10
+!         
+interface Ethernet0/2
+ ip address 10.255.0.46 255.255.255.254
+ ip ospf 1 area 0
+ ipv6 address FE80::1:14:2 link-local
+ ipv6 address 2020::1:0:1:201/120
+ ipv6 ospf 1 area 0
+!         
+interface Ethernet0/3
+ ip address 10.255.0.8 255.255.255.254
+ ip ospf 1 area 101
+ ipv6 address FE80::1:14:3 link-local
+ ipv6 address 2020::1:0:1:301/120
+ ipv6 ospf 1 area 101
+!         
+interface Ethernet1/0
+ no ip address
+ shutdown 
+!         
+interface Ethernet1/1
+ no ip address
+ shutdown 
+!         
+interface Ethernet1/2
+ no ip address
+ shutdown 
+!         
+interface Ethernet1/3
+ no ip address
+ shutdown 
+!         
+router ospf 1
+ router-id 1.1.255.255
+ area 10 stub
+ area 101 stub no-summary
+!         
+ip forward-protocol nd
+!         
+!         
+no ip http server
+no ip http secure-server
+!         
+ipv6 router ospf 1
+ router-id 1.1.255.255
+ area 10 stub
+ area 101 stub no-summary
+!         
+!         
+!         
+!         
+control-plane
+!         
+!         
+!         
+!         
+!         
+!         
+banner motd ^C Unauthorized access is prohibited.^C
+!         
+line con 0
+ password 7 0822455D0A16
+ logging synchronous
+ login    
+line aux 0
+ password 7 05080F1C2243
+line vty 0 4
+ password 7 01100F175804
+ login    
+ transport input all
+!         
+!         
+end

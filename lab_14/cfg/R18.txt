@@ -1,0 +1,391 @@
+!
+! Last configuration change at 17:12:28 EET Sun Nov 1 2020
+! NVRAM config last updated at 17:14:08 EET Sun Nov 1 2020
+!
+version 15.7
+service timestamps debug datetime msec
+service timestamps log datetime msec
+service password-encryption
+!
+hostname R18
+!
+boot-start-marker
+boot-end-marker
+!
+!
+enable secret 5 $1$nMNe$yhh.72i4AwDkF8rA9OY/e/
+!
+no aaa new-model
+!
+!
+!
+clock timezone EET 2 0
+mmi polling-interval 60
+no mmi auto-configure
+no mmi pvc
+mmi snmp-timeout 180
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+          
+          
+!         
+!         
+!         
+!         
+no ip domain lookup
+ip cef    
+ipv6 unicast-routing
+ipv6 cef  
+!         
+multilink bundle-name authenticated
+!         
+!         
+!         
+key chain weakpassword
+ key 1    
+  key-string 7 123456
+!         
+!         
+!         
+!         
+!         
+!         
+crypto pki trustpoint R20
+ enrollment url http://200.200.200.20:80
+ serial-number
+ revocation-check crl
+ rsakeypair R18
+!         
+!         
+crypto pki certificate chain R20
+ certificate 08
+  308204FE 308202E6 A0030201 02020108 300D0609 2A864886 F70D0101 05050030 
+  0F310D30 0B060355 04031304 5232304B 301E170D 32303131 30313039 32393430 
+  5A170D32 31313130 31303932 3934305A 30253123 300F0603 55040513 08363731 
+  30393135 32301006 092A8648 86F70D01 09021603 52313830 82022230 0D06092A 
+  864886F7 0D010101 05000382 020F0030 82020A02 82020100 996C8F1C 7621BE59 
+  8BAF4019 7327E6C6 C92907BD A3B96A17 469A24C3 0BF272BE 23CE5580 760A4BF9 
+  53C5FE10 37E6C4C4 2DA42390 9F5128D8 897E137C 294A92BF 4DF628C6 8CC40741 
+  77BBCAAF D2C3148C EE14824D 3EAEE911 BBD86515 21569892 604C4DDE E6DA0C97 
+  3E6C4120 D3A98384 7D002884 33975C45 7009686D 2F6523CB 5DED84FF 610F983A 
+  6B0C2D93 98849ACE 97F6EBF1 7A748845 550438E8 5115FDE9 79EC9B1E 8FB16D64 
+  6F7889C8 C3AB5A5E 27AEB9F4 1B46B908 B2EB52DF E52FE4FE 1DC535E3 46BFB280 
+  192E93C9 7F1321F1 BD39003B 55CB4C9D 1120DA36 4D7B030B A821CC89 74E7ADD1 
+  7248E701 3676C847 B608952F 53C24CE8 D4157C5A 04D9F002 C756DFCC 6CB27603 
+  7C2390A1 77E210DA 7D82E1F8 8F1870E6 7E531C1C 6C2233A5 6E947C49 CB6CDD28 
+  BAC05BB5 96AA0D9C B7F7B383 90708E59 558E5832 1A13E1A3 D2AC0AD9 007B209B 
+  FC471F51 1E35A229 0E8DAB49 EFA12F53 097310B1 803BC61C 5391FB59 5176C167 
+  082F32C1 3E3CD74D 14581409 946E60DE A3A3E0A2 72DFEECD 248C8EFA E40D425A 
+  E8B0EC7A 9B526EFA F7C7CCE6 71633012 E714CFE5 CAA79AD0 ED0B3F72 E36B452F 
+  06AAEF6C 9E07DDB9 3ADDE33E 4BAD5710 DCEAEE51 0B4FAA25 E21DF307 D6446E87 
+  495BB154 310C9D2A CAF7E33B DE5243C0 5250384B F18D6648 30693116 BB6F61CC 
+  7315FDCC B6D81270 5C1AEFB6 228BFF70 E893AFBB 4609AD37 02030100 01A34F30 
+  4D300B06 03551D0F 04040302 05A0301F 0603551D 23041830 1680147B FA8D11BC 
+  47212CEF 98B7458B BD7924F7 0D257F30 1D060355 1D0E0416 0414D17D 215FF117 
+  455F8378 BBB8FCF7 A69AC260 1F44300D 06092A86 4886F70D 01010505 00038202 
+  01009FFE 2ED8DCD4 5D269481 9AE4D0E8 D7A2FE06 21D38421 41BAD33B 506F0CA4 
+  06BA9272 E0F22188 6DAD4549 559DBD08 72036738 9C49218C C6E61394 9842D611 
+  F6F117C6 BB7ECD26 C8E23702 DDF26DD2 6A5AA35E D889F6A9 CA4FC1FD 5529781B 
+  011A0097 C0164D87 42542850 F45C7162 CD0FD661 284B15DD 0DF76627 E84E4BCD 
+  3E4F97CA 012FEF64 0F5DB9EE F313ACC7 2E9643B5 C0AE602D 72B6B033 2AD6C057 
+  CB682DED 07C8AFBE 7AEA50C6 9FD9011B 6EFA48C0 1E3F7E86 3B2E8C6B 23FF0B43 
+  79C85711 47815F7A 71B999D3 EA88FE71 E0011E9B 81BCB620 7736DDCB 85EE7E0F 
+  2EBE8A69 E9D24DE4 F156E7D9 404A1CAA A46C09B6 E06588FF A8797915 EBFDD0B3 
+  B5C8C1A8 AC6F9ED6 0051B2D0 F500CFF5 E475B9E5 CF14DFAE B29DAF82 9789CA7B 
+  BA2BC9C3 F4A1BD55 61057FF2 05823099 24782ED5 84C2A7CA DF250FCC 91AA5AC0 
+  2DD1C759 F0CAE4DD EB196A20 0E6A31B2 5153DA5B 7D1BCBD6 441EFE3E AD084384 
+  7C68C2E2 48896AB7 A741368F 3B130F45 EFB9C3F5 950DD1F8 0D9EB0BD EC3A43CF 
+  2C0805B8 9D2EEE95 657AD6C6 4F6C0C03 0BAC0500 BEF5C303 1CD6A64D CAB980E4 
+  7CD5CC52 45DD6E4D A620AADA D0F83E08 8B81218B 4FEF19C7 9BEC2351 1E31354A 
+  1FF93F10 559AF761 73E7DAD6 B9A4851E C3D06074 CA834F2F C3A66032 3EBCE2FC 
+  363A5187 8886E1E9 BC2646DC 1BC17CB1 7450DC7F 72D5A45C CF073672 0FE5E20B 
+  4527    
+        quit
+ certificate ca 01
+  308204FC 308202E4 A0030201 02020101 300D0609 2A864886 F70D0101 04050030 
+  0F310D30 0B060355 04031304 5232304B 301E170D 32303130 33313135 31353132 
+  5A170D32 33313033 31313531 3531325A 300F310D 300B0603 55040313 04523230 
+  4B308202 22300D06 092A8648 86F70D01 01010500 0382020F 00308202 0A028202 
+  0100A369 03AD4F9C B3FCBBC7 E3D58A10 48003AFE E5FC1136 FD165228 AC2D2D13 
+  0DCF1A10 217841CF EEA03616 15793BB5 EF4208DD 883AC842 7EF7CE9D 609EF602 
+  6F61BF90 7A0DBE5E 11619C6E D501870D EFF35F24 9FC256FD 6E4AE3D2 4F65DAC7 
+  928A6322 8593AA86 4B9B4095 956ACA22 19BF8814 BB350501 53CDFD0B 73494232 
+  55F828A2 55C84EC5 CA1FA00C A3522F39 8F0D7389 9BFBCDA7 FF09A253 C5EFA22B 
+  4BCBE57B 11F3BA63 E5050FF2 D5504FB6 D7B3043F 49D54516 2137BD0B 95B505E7 
+  2C53807A 9BB61A2E 5A0469A4 EC3E56A3 92AAAD25 A76AA923 E1993551 3CD3A6C8 
+  4EFC3149 35DCC44F 0A8175FB 072D3597 78BFA214 64978AA6 FEF94D9A A46249F0 
+  7CA44EC6 C5B78103 FE76575D 1B55BA50 4CF27D63 CD998282 6F54E3D3 3BE5FF4B 
+  7F475E24 45219533 758E3628 38D18379 2E3F0EEA FE8FA585 F2BC59A9 AE2B26FE 
+  913AFB96 B09F7832 4E462954 B6328E3D 1C527570 9A267629 822BF5BC 01E89DB3 
+  71D85725 21E4F745 DD6BCFE4 56C9C069 EB8F2166 B5C9C944 8FF82F1D 8AC966C2 
+  38A099D0 84AAEB6B 2985A23C 28D14963 205C3DCA C841ADB6 D4C59B1E D30742C5 
+  BB3F8E56 68480737 97A7C7B6 2BB88063 628120E7 50FD6A3D B4163867 470900B2 
+  EE89ED97 847F66F3 C1C5DCAB 56B860DF 7EFE17D5 A14A6ACD EA2AC399 A07DC9E6 
+  97182AA8 F338DE7B 6BABB0D7 29B62D9D EC3DD11F 79F51DF0 B323B6FD 6FDE97D7 
+  89290203 010001A3 63306130 0F060355 1D130101 FF040530 030101FF 300E0603 
+  551D0F01 01FF0404 03020186 301F0603 551D2304 18301680 147BFA8D 11BC4721 
+  2CEF98B7 458BBD79 24F70D25 7F301D06 03551D0E 04160414 7BFA8D11 BC47212C 
+  EF98B745 8BBD7924 F70D257F 300D0609 2A864886 F70D0101 04050003 82020100 
+  61CD4AA8 AD9BA661 8AFBEF76 45346F03 ECBCA164 4815F188 E8878801 9E194085 
+  BE515EB0 54FFFCDD C782F48C D3C924A2 608E3ECA 997B8A0C 102FE41B 2E2FC360 
+  8EFBD498 D64467A7 4849C7B5 0A17F640 01302017 4362388E D8ADEC0B AD7C4D19 
+  4D5629D0 F413C90C D5537965 A09296FE 274E67B7 D62A0301 600F1E62 57CB9FA7 
+  AB9C29DD 4EBCA724 90253197 ABE442E0 F9AB38C6 4379CC07 B25084B9 85F10D64 
+  441CAF17 7643F9A9 B6148C83 063B52DF 44E7D404 02AF8545 0FABF0AE 2C4CBBBA 
+  685D91AD AF11F9E8 0B0B8CD8 03B909A9 F93B4E56 E62A9B9C 445B498E 1205D810 
+  6B2BCA4C BFEB8EF8 87BBC0FD 068C16F9 B68C23A4 5F21260A D2BA6F9A 074EB050 
+  6FD9D6D4 B7983CF5 A47E50CD 0150B18F ACD2E2AB 41377B0A DE557882 7A3970AA 
+  7CA9F63A FEB9B3C5 564E5C29 4E568E25 D1080923 F27231C1 47EBD2B4 3D74EAD6 
+  0D842994 A816EC60 FA7EA838 A32E5C73 12B90E76 06B04797 DCEC1583 0ECBC5BB 
+  6F83B6C7 C3B8D993 E95D894A 3A98A398 8CD63924 E441B2F3 55A30E55 7B6CA8D1 
+  97675DEC 599795EF 86516839 32F12E7A E602084A 18062954 98816257 E6F9B2D1 
+  85A1FCB8 84746C94 726A0766 BD4DB277 06635315 E699F9C5 1E16396B AC4D82AA 
+  A7B8F163 37D02308 8CA06C39 7FA81DD3 D0B24BA4 53251A3F 2FD6F66D 798869DE 
+  E4D8F1C8 3D5C65CD 4D8CBAAE C6AEDCDA BF7D2677 BD40A8FE 191F6735 D1
+  B6808A  
+        quit
+!         
+redundancy
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+crypto isakmp policy 1
+ encr aes 256
+ hash sha256
+ group 14 
+crypto isakmp keepalive 60 5
+!         
+!         
+crypto ipsec transform-set vpn-set ah-sha256-hmac esp-aes 
+ mode transport
+!         
+!         
+crypto ipsec profile vpn-ipsec
+ set transform-set vpn-set 
+!         
+!         
+!         
+!         
+!         
+!         
+interface Loopback0
+ ip address 10.96.2.254 255.255.255.255
+ ipv6 address FE80::1:23:96 link-local
+ ipv6 address FC00::96:2:1/112
+!         
+interface Tunnel0
+ bandwidth 10000
+ ip address 10.255.0.53 255.255.255.254
+ ip mtu 1400
+ ip tcp adjust-mss 1360
+ ip ospf 2 area 0
+ tunnel source Ethernet0/2
+ tunnel mode ipsec ipv4
+ tunnel destination 10.255.0.46
+ tunnel key 0
+ tunnel protection ipsec profile vpn-ipsec
+!         
+interface Tunnel1
+ bandwidth 10000
+ ip address 10.255.0.55 255.255.255.254
+ ip mtu 1400
+ ip tcp adjust-mss 1360
+ ip ospf 2 area 0
+ tunnel source Ethernet0/3
+ tunnel mode ipsec ipv4
+ tunnel destination 10.255.0.12
+ tunnel key 1
+ tunnel protection ipsec profile vpn-ipsec
+!         
+interface Ethernet0/0
+ ip address 10.255.0.15 255.255.255.254
+ ip nat inside
+ ip virtual-reassembly in
+ duplex auto
+ ipv6 address FE80::1:18:0 link-local
+ ipv6 address 2020::2:0:1:1/120
+!         
+interface Ethernet0/1
+ ip address 10.255.0.19 255.255.255.254
+ ip nat inside
+ ip virtual-reassembly in
+ duplex auto
+ ipv6 address FE80::1:18:1 link-local
+ ipv6 address 2020::2:0:1:101/120
+!         
+interface Ethernet0/2
+ ip address 10.255.0.20 255.255.255.254
+ ip nat outside
+ ip virtual-reassembly in
+ duplex auto
+ ipv6 address FE80::1:18:2 link-local
+ ipv6 address 2020::2:0:1:201/120
+!         
+interface Ethernet0/3
+ ip address 10.255.0.22 255.255.255.254
+ ip nat outside
+ ip virtual-reassembly in
+ duplex auto
+ ipv6 address FE80::1:18:3 link-local
+ ipv6 address 2020::2:0:1:301/120
+!         
+interface Ethernet1/0
+ no ip address
+ shutdown 
+ duplex auto
+!         
+interface Ethernet1/1
+ no ip address
+ shutdown 
+ duplex auto
+!         
+interface Ethernet1/2
+ no ip address
+ shutdown 
+ duplex auto
+!         
+interface Ethernet1/3
+ no ip address
+ shutdown 
+ duplex auto
+!         
+!         
+router eigrp SPBInstance
+ !        
+ address-family ipv4 unicast autonomous-system 2042
+  !       
+  af-interface default
+   authentication mode md5
+   authentication key-chain weakpassword
+   passive-interface
+  exit-af-interface
+  !       
+  af-interface Ethernet0/1
+   summary-address 0.0.0.0 0.0.0.0
+   no passive-interface
+  exit-af-interface
+  !       
+  af-interface Ethernet0/0
+   summary-address 0.0.0.0 0.0.0.0
+   no passive-interface
+  exit-af-interface
+  !       
+  topology base
+   maximum-paths 10
+   redistribute static
+  exit-af-topology
+  network 10.96.2.254 0.0.0.0
+  network 10.255.0.14 0.0.0.1
+  network 10.255.0.18 0.0.0.1
+  eigrp router-id 1.1.254.255
+ exit-address-family
+ !        
+ address-family ipv6 unicast autonomous-system 2042
+  !       
+  af-interface default
+   authentication mode md5
+   authentication key-chain weakpassword
+   passive-interface
+  exit-af-interface
+  !       
+  af-interface Ethernet0/1
+   no passive-interface
+  exit-af-interface
+  !       
+  af-interface Ethernet0/0
+   no passive-interface
+  exit-af-interface
+  !       
+  topology base
+   maximum-paths 10
+   redistribute static
+  exit-af-topology
+ exit-address-family
+!         
+router ospf 2
+ redistribute eigrp 2042 subnets
+ passive-interface default
+ no passive-interface Tunnel0
+ no passive-interface Tunnel1
+ network 10.2.0.0 0.0.255.255 area 0
+!         
+router bgp 2042
+ template peer-policy GENERAL-out
+  prefix-list GENERAL-LIST-out out
+ exit-peer-policy
+ !        
+ template peer-session GENERAL-520
+  remote-as 520
+ exit-peer-session
+ !        
+ bgp log-neighbor-changes
+ network 100.100.100.0 mask 255.255.255.0
+ neighbor 10.255.0.21 inherit peer-session GENERAL-520
+ neighbor 10.255.0.21 inherit peer-policy GENERAL-out
+ neighbor 10.255.0.23 inherit peer-session GENERAL-520
+ neighbor 10.255.0.23 inherit peer-policy GENERAL-out
+ maximum-paths 2
+!         
+ip forward-protocol nd
+!         
+!         
+no ip http server
+no ip http secure-server
+ip nat pool OUT-Pool 100.100.100.1 100.100.100.5 netmask 255.255.255.0
+ip nat inside source list 1 pool OUT-Pool
+ip route 100.100.100.0 255.255.255.0 Null0
+!         
+!         
+ip prefix-list GENERAL-LIST-out seq 5 permit 10.255.0.0/24
+ip prefix-list GENERAL-LIST-out seq 7 permit 100.100.100.0/24
+ip prefix-list GENERAL-LIST-out seq 10 deny 0.0.0.0/0 le 32
+ipv6 ioam timestamp
+!         
+!         
+access-list 1 permit 10.2.0.0 0.0.255.255
+access-list 1 permit 10.255.0.18 0.0.0.1
+access-list 1 permit 10.255.0.14 0.0.0.1
+!         
+control-plane
+!         
+!         
+!         
+!         
+!         
+!         
+!         
+banner motd ^CC Unauthorized access is prohibited.^C
+!         
+line con 0
+ password 7 01100F175804
+ logging synchronous
+ login    
+line aux 0
+ password 7 02050D480809
+line vty 0 4
+ password 7 104D000A0618
+ login    
+ transport input all
+!         
+ntp update-calendar
+ntp server 10.255.0.33
+ntp server 10.255.0.27 prefer
+!         
+end 
